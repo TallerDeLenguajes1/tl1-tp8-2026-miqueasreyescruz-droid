@@ -4,7 +4,7 @@ public class Tarea
 {
     private int _tareaID;
     private string _descripcion;
-    int _duracion;
+    private int _duracion;
 
     public int TareaID { get => _tareaID; }
     public string Descripcion { get => _descripcion; set => _descripcion = value; }
@@ -23,24 +23,16 @@ public class GestorTareas
     private List<Tarea> _listapendientes = new List<Tarea>();
     private int _inicialID = 1000;
 
-    public List<Tarea> Listapendientes { get => _listapendientes; }
     public int InicialID { get => _inicialID; }
 
     public bool AgregarTarea(string descripcion,int duracion)
     {
-        bool exitoso = true;
+        if (duracion < 10 || duracion > 100) return false;
+    
+        Tarea NuevaTarea = new Tarea(_inicialID,descripcion,duracion);
+        _listapendientes.Add(NuevaTarea);
+        _inicialID++; 
 
-        if (duracion > 10 && duracion < 100)
-        {
-            Tarea NuevaTarea = new Tarea(_inicialID,descripcion,duracion);
-            Listapendientes.Add(NuevaTarea);
-            _inicialID++;    
-        }
-        else
-        {
-            exitoso = false;
-        }
-
-        return exitoso;
+        return true;
     }
 } 
