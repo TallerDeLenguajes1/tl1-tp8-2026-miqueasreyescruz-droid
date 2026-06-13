@@ -1,3 +1,5 @@
+using Microsoft.VisualBasic;
+
 namespace ToDo;
 
 public class Tarea
@@ -21,6 +23,7 @@ public class Tarea
 public class GestorTareas
 {
     private List<Tarea> _listapendientes = new List<Tarea>();
+    private List<Tarea> _listarealizadas = new List<Tarea>();
     private int _inicialID = 1000;
 
     public int InicialID { get => _inicialID; }
@@ -34,5 +37,42 @@ public class GestorTareas
         _inicialID++; 
 
         return true;
+    }
+
+    public IReadOnlyList<Tarea> Pendientes
+    {
+        get => _listapendientes.AsReadOnly();
+    }
+
+    public IReadOnlyCollection<Tarea> Realizadas
+    {
+       get => _listarealizadas.AsReadOnly();
+    }
+
+    public List<Tarea> BuscarCoincidencia (string clave)
+    {
+        List<Tarea> coincidencias = new List<Tarea>();
+
+        foreach (Tarea tarea in _listapendientes)
+        {
+            if (tarea.Descripcion.Contains(clave, StringComparison.OrdinalIgnoreCase)) // StringComparison.OrdinalIgnoreCase Para que ignore si es Mayusc o Minusc
+            {
+                coincidencias.Add(tarea);
+            }
+        }
+
+        return coincidencias;
+    }
+
+    public bool MarcarRealizada (int ID)
+    {
+        Tarea tareaEncontrada = _listapendientes.Find(t => t.TareaID == ID);
+
+        if (tareaEncontrada == null) return false;
+
+        _listarealizadas.Add(tareaEncontrada);
+        _listapendientes.Remove(tareaEncontrada);
+
+        return false;
     }
 } 
