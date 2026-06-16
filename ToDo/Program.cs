@@ -81,12 +81,12 @@ void ConsultarLista ()
     IReadOnlyCollection<Tarea> ListaConsultada;
     string selector;
 
-    Console.WriteLine("-> Que lista de tarea quiere ver? 1. Pendientes / 2.Realizadas");
+    Console.WriteLine("-> Que lista de tarea quiere ver? 1. Pendientes / 2.Realizadas / 3. Ambas");
 
     do
     {
         selector = Console.ReadLine();
-    } while (selector != "1" && selector != "2");
+    } while (selector != "1" && selector != "2" && selector != "3");
 
     if (selector == "1")
     {
@@ -102,8 +102,36 @@ void ConsultarLista ()
             MostrarLista(ListaConsultada);
         }
     }
-    else
+
+    if (selector == "2")
     {
+        ListaConsultada = Gestor.Realizadas;
+
+        if (!ListaConsultada.Any())
+        {
+            Console.WriteLine("-> Lista de tareas realizadas vacia!");
+        }
+        else
+        {
+            Console.WriteLine("-> Mostrando lista de tareas realizadas: ");
+            MostrarLista(ListaConsultada);
+        }
+    }
+
+    if (selector == "3")
+    {
+        ListaConsultada = Gestor.Pendientes;
+
+        if (!ListaConsultada.Any())
+        {
+            Console.WriteLine("-> Lista de tareas pendientes vacia!");
+        }
+        else
+        {
+            Console.WriteLine("-> Mostrando lista de tareas pendientes: ");
+            MostrarLista(ListaConsultada);
+        }
+
         ListaConsultada = Gestor.Realizadas;
 
         if (!ListaConsultada.Any())
@@ -206,7 +234,7 @@ void MarcarComoRealizada ()
                 }
             } while (!validarEleccion);
 
-            if(Gestor.MarcarRealizada(coincidencias[0].TareaID)) Console.WriteLine("Tarea encontrada! Marcada como realizada con exito!");
+            if(Gestor.MarcarRealizada(claveID)) Console.WriteLine("Tarea encontrada! Marcada como realizada con exito!");
             else Console.WriteLine("ERROR: Se encontro la tarea, pero no pudo marcarse como realizada");
         }
     }
