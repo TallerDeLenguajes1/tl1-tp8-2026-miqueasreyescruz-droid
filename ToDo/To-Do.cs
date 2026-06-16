@@ -1,5 +1,3 @@
-using Microsoft.VisualBasic;
-
 namespace ToDo;
 
 public class Tarea
@@ -73,6 +71,6 @@ public class GestorTareas
         _listarealizadas.Add(tareaEncontrada);
         _listapendientes.Remove(tareaEncontrada);
 
-        return false;
+        return true;
     }
 } 

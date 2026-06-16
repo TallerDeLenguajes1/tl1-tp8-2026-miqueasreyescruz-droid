@@ -21,8 +21,10 @@ do
             AgregarTarea();
             break;
         case "2":
+            MarcarComoRealizada();
             break;
         case "3":
+            BuscarTarea();
             break;
         case "4":
             ConsultarLista();
@@ -72,7 +74,7 @@ void MostrarLista (IReadOnlyCollection<Tarea> Lista)
     }
 }
 
-void ConsultarLista()
+void ConsultarLista ()
 {
     IReadOnlyCollection<Tarea> ListaConsultada;
     string selector;
@@ -108,13 +110,13 @@ void ConsultarLista()
         }
         else
         {
-            Console.WriteLine("-> Mostrando lista de tareas pendientes: ");
+            Console.WriteLine("-> Mostrando lista de tareas realizadas: ");
             MostrarLista(ListaConsultada);
         }
     }
 }
 
-void AgregarTarea()
+void AgregarTarea ()
 {
     int duracion = 0;
     string descripcion;
@@ -142,4 +144,75 @@ void AgregarTarea()
 
     if(!Gestor.AgregarTarea(descripcion,duracion)) Console.WriteLine("ERROR: no se pudo agregar la tarea");
     else Console.WriteLine("Tarea agregada con exito!");
+}
+
+void MarcarComoRealizada ()
+{
+    int claveID;
+    string clave;
+    bool validarEleccion;
+    List<Tarea> Coincidencias;
+
+    Console.WriteLine("Marcando tarea como realizada...");
+    Console.Write("-> Ingrese un ID (a partir de 1000) o palabra clave: ");
+    clave = Console.ReadLine();
+
+    if (int.TryParse(clave, out claveID))
+    {
+        Console.WriteLine($"Ingresado: ID {claveID}");
+        if (Gestor.MarcarRealizada(claveID)) Console.WriteLine("Tarea encontrada! Marcada como realizada con exito!");
+        else Console.WriteLine("Tarea, con el ID ingresado, no encontrada.");
+    }
+    else
+    {
+        Console.WriteLine($"Ingresado: clave {clave}");
+        Coincidencias = Gestor.BuscarCoincidencia(clave);
+
+        if (Coincidencias.Count == 0)
+        {
+            Console.WriteLine("Ninguna descripcion coincide con la clave ingresada.");
+        }
+        else if (Coincidencias.Count == 1)
+        {
+            if(Gestor.MarcarRealizada(Coincidencias[0].TareaID)) Console.WriteLine("Tarea encontrada! Marcada como realizada con exito!");
+            else Console.WriteLine("ERROR: Se encontro la tarea, pero no pudo marcarse como realizada");
+        }
+        else
+        {
+            Console.WriteLine("-> Mostrando coincidencias: ");
+            Console.WriteLine("- - - - - - - - - - - - - - - - - - - - -");
+            foreach (Tarea tarea in Coincidencias)
+            {
+                Console.WriteLine($"ID: {tarea.TareaID}");
+                Console.WriteLine($"Descripcion: {tarea.Descripcion}");
+                Console.WriteLine($"Duracion: {tarea.Duracion}");
+                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - -");
+            }
+
+            Console.Write("-> Ingrese el ID de la tarea que desea borrar: ");
+            do
+            {
+                validarEleccion = true;
+
+                validarEleccion = int.TryParse(Console.ReadLine(), out claveID);
+
+                if (!validarEleccion)
+                {
+                    Console.WriteLine("ERROR: valor invalido ingresado");
+                    continue;
+                } 
+
+                bool ExisteID = Coincidencias.Any(tarea => tarea.TareaID == claveID);
+
+                if (!ExisteID) 
+                {
+                    Console.WriteLine("ADVERTENCIA: Debe elegir uno de los ID mostrados");
+                    validarEleccion = false;
+                }
+            } while (!validarEleccion);
+
+            if(Gestor.MarcarRealizada(Coincidencias[0].TareaID)) Console.WriteLine("Tarea encontrada! Marcada como realizada con exito!");
+            else Console.WriteLine("ERROR: Se encontro la tarea, pero no pudo marcarse como realizada");
+        }
+    }
 }
