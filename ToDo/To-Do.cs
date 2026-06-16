@@ -62,6 +62,21 @@ public class GestorTareas
         return coincidencias;
     }
 
+    public Tarea BuscarCoincidencia (int ID)
+    {
+        Tarea tareaBuscada;
+
+        tareaBuscada = _listapendientes.Find(t => t.TareaID == ID);
+
+        if (tareaBuscada != null) return tareaBuscada;
+
+        tareaBuscada = _listarealizadas. Find(t => t.TareaID == ID);
+
+        if (tareaBuscada != null) return tareaBuscada;
+
+        return null;
+    }
+
     public bool MarcarRealizada (int ID)
     {
         Tarea tareaEncontrada = _listapendientes.Find(t => t.TareaID == ID);

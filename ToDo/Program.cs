@@ -1,4 +1,5 @@
-﻿using ToDo;
+﻿using System.Linq.Expressions;
+using ToDo;
 
 string selector;
 
@@ -30,6 +31,7 @@ do
             ConsultarLista();
             break;
         case "5":
+            Console.WriteLine("Saliendo...");
             break;
     }
 
@@ -47,7 +49,7 @@ do
     
 } while (selector == "Y");
 
-Console.WriteLine("Saliendo...");
+Console.WriteLine("Programa Finalizado");
 
 // Funciones
 
@@ -151,7 +153,7 @@ void MarcarComoRealizada ()
     int claveID;
     string clave;
     bool validarEleccion;
-    List<Tarea> Coincidencias;
+    List<Tarea> coincidencias;
 
     Console.WriteLine("Marcando tarea como realizada...");
     Console.Write("-> Ingrese un ID (a partir de 1000) o palabra clave: ");
@@ -166,28 +168,21 @@ void MarcarComoRealizada ()
     else
     {
         Console.WriteLine($"Ingresado: clave {clave}");
-        Coincidencias = Gestor.BuscarCoincidencia(clave);
+        coincidencias = Gestor.BuscarCoincidencia(clave);
 
-        if (Coincidencias.Count == 0)
+        if (coincidencias.Count == 0)
         {
             Console.WriteLine("Ninguna descripcion coincide con la clave ingresada.");
         }
-        else if (Coincidencias.Count == 1)
+        else if (coincidencias.Count == 1)
         {
-            if(Gestor.MarcarRealizada(Coincidencias[0].TareaID)) Console.WriteLine("Tarea encontrada! Marcada como realizada con exito!");
+            if(Gestor.MarcarRealizada(coincidencias[0].TareaID)) Console.WriteLine("Tarea encontrada! Marcada como realizada con exito!");
             else Console.WriteLine("ERROR: Se encontro la tarea, pero no pudo marcarse como realizada");
         }
         else
         {
             Console.WriteLine("-> Mostrando coincidencias: ");
-            Console.WriteLine("- - - - - - - - - - - - - - - - - - - - -");
-            foreach (Tarea tarea in Coincidencias)
-            {
-                Console.WriteLine($"ID: {tarea.TareaID}");
-                Console.WriteLine($"Descripcion: {tarea.Descripcion}");
-                Console.WriteLine($"Duracion: {tarea.Duracion}");
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - -");
-            }
+            MostrarLista(coincidencias);
 
             Console.Write("-> Ingrese el ID de la tarea que desea borrar: ");
             do
@@ -202,7 +197,7 @@ void MarcarComoRealizada ()
                     continue;
                 } 
 
-                bool ExisteID = Coincidencias.Any(tarea => tarea.TareaID == claveID);
+                bool ExisteID = coincidencias.Any(tarea => tarea.TareaID == claveID);
 
                 if (!ExisteID) 
                 {
@@ -211,8 +206,45 @@ void MarcarComoRealizada ()
                 }
             } while (!validarEleccion);
 
-            if(Gestor.MarcarRealizada(Coincidencias[0].TareaID)) Console.WriteLine("Tarea encontrada! Marcada como realizada con exito!");
+            if(Gestor.MarcarRealizada(coincidencias[0].TareaID)) Console.WriteLine("Tarea encontrada! Marcada como realizada con exito!");
             else Console.WriteLine("ERROR: Se encontro la tarea, pero no pudo marcarse como realizada");
+        }
+    }
+}
+
+void BuscarTarea()
+{
+    int claveID;
+    string clave;
+
+    Console.WriteLine("Buscando una tarea...");
+    Console.Write("-> Ingrese un ID (a partir de 1000) o palabra clave: ");
+    clave = Console.ReadLine();
+
+    if (int.TryParse(clave, out claveID))
+    {
+        Tarea TareaBuscada = Gestor.BuscarCoincidencia(claveID);
+        if (TareaBuscada != null)
+        {
+            Console.WriteLine("-> Tarea encontrada:");
+            Console.WriteLine($"ID: {TareaBuscada.TareaID} | Desc: {TareaBuscada.Descripcion} | Duración: {TareaBuscada.Duracion}");
+        }
+        else
+        {
+            Console.WriteLine("-> No se encontró ninguna tarea con ese ID.");
+        }
+    }
+    else
+    {
+        List<Tarea> coincidencias = Gestor.BuscarCoincidencia(clave);
+        if (coincidencias.Any())
+        {
+            Console.WriteLine("-> Coincidencias encontradas: ");
+            MostrarLista(coincidencias);
+        }
+        else
+        {
+            Console.WriteLine("-> No se encontraron tareas que coincidan con la búsqueda.");
         }
     }
 }
