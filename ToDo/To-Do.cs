@@ -70,7 +70,7 @@ public class GestorTareas
 
         if (tareaBuscada != null) return tareaBuscada;
 
-        tareaBuscada = _listarealizadas. Find(t => t.TareaID == ID);
+        tareaBuscada = _listarealizadas.Find(t => t.TareaID == ID);
 
         if (tareaBuscada != null) return tareaBuscada;
 

@@ -15,24 +15,28 @@ do
     Console.WriteLine("3. MILTIPLICACION");
     Console.WriteLine("4. DIVISION");
     Console.WriteLine("5. RESULTADO");
+    Console.WriteLine("6. HISTORIAL");
     Console.WriteLine("------------------");
 
     selector = Console.ReadLine();
-    if (selector != "1" && selector != "2" && selector != "3" && selector != "4" && selector != "5")
+    if (selector != "1" && selector != "2" && selector != "3" && selector != "4" && selector != "5" && selector != "6")
     {
         Console.WriteLine("-> ERROR: opcion no valida, ingrese nuevamente:");
     }
     else
     {
-        bool validarNum = false;
-
-        while(!validarNum)
+        if (selector != "6")
         {
-            Console.WriteLine("-> Ingrese el numero: ");
-            validarNum = float.TryParse(Console.ReadLine(), out num);
-            if (!validarNum) Console.WriteLine("ERROR: valor invalido ingresado");
-        }
+            bool validarNum = false;
 
+            while(!validarNum)
+            {
+                Console.WriteLine("-> Ingrese el numero: ");
+                validarNum = float.TryParse(Console.ReadLine(), out num);
+                if (!validarNum) Console.WriteLine("ERROR: valor invalido ingresado");
+            }
+        }
+        
         switch (selector)
         {
             case "1":
@@ -49,6 +53,13 @@ do
                 break;
             case "5":
                 Console.WriteLine("Resultado: " + MiCalculadora.Resultado);
+                MiCalculadora.Limpiar();
+                break;
+            case "6":
+                foreach(Operacion ope in MiCalculadora.Historial)
+                {
+                    Console.WriteLine($"-> Resultado: {ope.Resultado}");
+                }
                 break;
             default:
                 
